@@ -1,0 +1,145 @@
+/* General body styling */
+body {
+    background-color: #e9ecef;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Header */
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #020202;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+/* Navigation bar */
+.nav {
+    background-color: #505050; /* Darker background */
+    padding: 10px 0;
+    border-radius: 0.25rem;
+}
+
+.nav-item {
+    margin-right: 15px;
+}
+
+.nav-link {
+    color: #f8f9fa !important; /* Light color for text */
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: #ffc107 !important; /* Highlight color on hover */
+    text-decoration: underline;
+}
+
+/* Form styling */
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+form label {
+    margin-right: 10px;
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Card styling */
+.card {
+    width: 18rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.card img {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.card-body {
+    padding: 15px;
+    background-color: #f8f9fa;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 10px;
+    color: #007bff;
+}
+
+.card-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* Empty listing */
+h5 {
+    text-align: center;
+    margin-top: 50px;
+    color: #dc3545;
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+/* Estilo del contenedor de la lista de categorías */
+.list-group {
+    width: 50%;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo de cada categoría en la lista */
+.list-group-item {
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: capitalize;
+    background-color: #f8f9fa; /* Fondo claro */
+    color: #343a40; /* Texto oscuro */
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    transition: background-color 0.3s ease-in-out, transform 0.2s;
+}
+
+/* Hover effect for the list items */
+.list-group-item:hover {
+    background-color: #e9ecef;
+    transform: scale(1.02);
+    color: #007bff; /* Color del texto al hacer hover */
+}
+
+
+p {
+    text-align: center;
+    color: #6c757d;
+    font-size: 16px;
+}
+
+
+.list-group-item a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.list-group-item a:hover {
+    color: #0056b3;
+}
