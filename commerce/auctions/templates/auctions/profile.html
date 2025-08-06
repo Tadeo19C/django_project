@@ -1,0 +1,76 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container py-4">
+
+    <div class="profile-section">
+        <h2>✅ Subastas creadas por mí</h2>
+        {% if created %}
+            <div class="profile-auction-grid">
+                {% for item in created %}
+                <div class="card-profile">
+                    <img src="{{ item.image }}" alt="{{ item.title }}">
+                    <div class="card-profile-body">
+                        <div class="card-profile-title">{{ item.title }}</div>
+                        <div class="card-profile-text">{{ item.description|truncatechars:100 }}</div>
+                    </div>
+                    <div class="card-profile-footer">
+                        <span>${{ item.price }}</span>
+                        <a href="{% url 'listing' item.id %}" class="btn btn-outline-primary">Ver subasta</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No has creado ninguna subasta todavía.</p>
+        {% endif %}
+    </div>
+
+    <div class="profile-section">
+        <h2>💰 Subastas en las que he pujado</h2>
+        {% if bid_auctions %}
+            <div class="profile-auction-grid">
+                {% for item in bid_auctions %}
+                <div class="card-profile">
+                    <img src="{{ item.image }}" alt="{{ item.title }}">
+                    <div class="card-profile-body">
+                        <div class="card-profile-title">{{ item.title }}</div>
+                        <div class="card-profile-text">{{ item.description|truncatechars:100 }}</div>
+                    </div>
+                    <div class="card-profile-footer">
+                        <span>${{ item.price }}</span>
+                        <a href="{% url 'listing' item.id %}" class="btn btn-outline-warning">Ver subasta</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No has pujado en ninguna subasta todavía.</p>
+        {% endif %}
+    </div>
+
+    <div class="profile-section">
+        <h2>🏆 Subastas ganadas</h2>
+        {% if won %}
+            <div class="profile-auction-grid">
+                {% for item in won %}
+                <div class="card-profile border border-success">
+                    <img src="{{ item.image }}" alt="{{ item.title }}">
+                    <div class="card-profile-body">
+                        <div class="card-profile-title">{{ item.title }}</div>
+                        <div class="card-profile-text">{{ item.description|truncatechars:100 }}</div>
+                    </div>
+                    <div class="card-profile-footer">
+                        <span><strong>Ganaste por:</strong> ${{ item.price }}</span>
+                        <a href="{% url 'listing' item.id %}" class="btn btn-outline-success">Ver detalles</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No has ganado ninguna subasta aún.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

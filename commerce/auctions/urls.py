@@ -18,4 +18,5 @@ urlpatterns = [
     path("openauction/<int:id>", views.openAuction, name="openauction"),
     path("categories/", views.categories, name="categories"),
     path("category/<int:id>/", views.category_list, name="category_list"),
+    path("profile/", views.my_auctions, name="profile"),
 ]

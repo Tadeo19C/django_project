@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.contrib import messages
+from datetime import datetime
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -8,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import User, Category, Listing, Comment, Bid
 from django import forms
+from django.db.models import Max, F
 
 
 
@@ -101,17 +104,39 @@ def register(request):
 @login_required(login_url="login")
 def createListing(request):
     if request.method == "POST":
-        form = createForm(request.POST)
+        form = createForm(request.POST, request.FILES)
 
         if form.is_valid():
             title = form.cleaned_data['title']
             description = form.cleaned_data['description']
-            imageUrl = form.cleaned_data['imageUrl']
+            imageUrl = request.FILES.get('imageUrl')
             price = form.cleaned_data['price']
-            category_name = form.cleaned_data['category']  # El nombre de la categoría ingresada por el usuario
+            closing_date = form.cleaned_data.get('closing_date')
+            category_name = form.cleaned_data['category']
             currentUser = request.user
 
-            # Verificar si la categoría ya existe
+            # Validar que el título y la descripción no estén vacíos
+            if not title or not description:
+                messages.error(request, "Title and description are required.")
+                return render(request, "auctions/create.html", {
+                    "form": form
+                })
+
+            # Validar que el precio sea mayor que cero
+            if float(price) <= 0:
+                messages.error(request, "Price must be greater than zero.")
+                return render(request, "auctions/create.html", {
+                    "form": form
+                })
+
+            # Validar que la fecha de cierre (si existe) sea en el futuro
+            if closing_date and closing_date <= datetime.now().date():
+                messages.error(request, "Closing date must be in the future.")
+                return render(request, "auctions/create.html", {
+                    "form": form
+                })
+
+            # Verificar si la categoría ya existe o crear una nueva
             category, created = Category.objects.get_or_create(categoryName=category_name)
 
             # Crear el nuevo listing
@@ -120,19 +145,20 @@ def createListing(request):
                 description=description,
                 imageUrl=imageUrl,
                 price=float(price),
-                category=category,  # Asignar la categoría (nueva o existente)
+                category=category, 
                 owner=currentUser,
             )
             newListing.save()
 
+            messages.success(request, "Listing created successfully!")
             return HttpResponseRedirect(reverse('index'))
         else:
             return render(request, "auctions/create.html", {
                 "form": form
             })       
-    
+
     else:
-        return render(request, "auctions/create.html",{
+        return render(request, "auctions/create.html", {
             "form": createForm()
         })
 
@@ -149,7 +175,7 @@ def view_listing(request, id):
         "commentform": commentForm(),
         "comments": comments,
         "userBid": max_value,
-        "isOwner": isOwner, 
+        "isOwner": isOwner,
         "message2": 'Congratulation you won the bid',
     })       
     else:
@@ -310,4 +336,34 @@ def openAuction(request, id):
         "userBid": max_value,
         "isOwner": isOwner, 
         "message2": "Auction is Opened"
+    })
+
+
+from django.db.models import Max, F
+
+@login_required
+def my_auctions(request):
+    user = request.user
+
+    # 1. Subastas creadas por el usuario
+    created = Listing.objects.filter(owner=user)
+
+    # 2. Subastas en las que el usuario ha pujado
+    bids = Bid.objects.filter(user=user).values_list('auction', flat=True).distinct()
+    bid_auctions = Listing.objects.filter(id__in=bids)
+
+    # 3. Subastas ganadas por el usuario
+    won = Listing.objects.filter(
+        isActive=False,
+        auction__user=user
+    ).annotate(
+        max_bid=Max('auction__offer')
+    ).filter(
+        auction__offer=F('max_bid')
+    ).distinct()
+
+    return render(request, "auctions/profile.html", {
+        "created": created,
+        "bid_auctions": bid_auctions,
+        "won": won
     })
